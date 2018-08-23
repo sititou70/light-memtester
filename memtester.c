@@ -102,7 +102,7 @@ off_t physaddrbase = 0;
 /* Function definitions */
 void usage(char *me) {
     fprintf(stderr, "\n"
-            "Usage: %s [-p physaddrbase [-d device]] <mem>[B|K|M|G] [loops]\n",
+            "Usage: %s [-p physaddrbase [-d device]] [-l light level] <mem>[B|K|M|G] [loops]\n",
             me);
     exit(EXIT_FAIL_NONSTARTER);
 }
@@ -118,6 +118,7 @@ int main(int argc, char **argv) {
     int do_mlock = 1, done_mem = 0;
     int exit_code = 0;
     int memfd, opt, memshift;
+    int light_level = 1;
     size_t maxbytes = -1; /* addressable memory, in bytes */
     size_t maxmb = (maxbytes >> 20) + 1; /* addressable memory, in MB */
     /* Device to mmap memory from with -p, default is normal core */
@@ -150,7 +151,7 @@ int main(int argc, char **argv) {
         printf("using testmask 0x%lx\n", testmask);
     }
 
-    while ((opt = getopt(argc, argv, "p:d:")) != -1) {
+    while ((opt = getopt(argc, argv, "p:d:l:")) != -1) {
         switch (opt) {
             case 'p':
                 errno = 0;
@@ -192,7 +193,14 @@ int main(int argc, char **argv) {
                         device_specified = 1;
                     }
                 }
-                break;              
+                break;
+            case 'l':
+                light_level = (int)strtol(optarg, NULL, 10);
+                if(light_level <= 0){
+                    fprintf(stderr, "can not parse the light level argumet to number");
+                    usage(argv[0]);
+                }
+                break;
             default: /* '?' */
                 usage(argv[0]); /* doesn't return */
         }
@@ -359,6 +367,7 @@ int main(int argc, char **argv) {
     if (!do_mlock) fprintf(stderr, "Continuing with unlocked memory; testing "
                            "will be slower and less reliable.\n");
 
+    if(light_level > 1)printf("light level: %d\n", light_level);
     halflen = bufsize / 2;
     count = halflen / sizeof(ul);
     bufa = (ulv *) aligned;
@@ -372,7 +381,7 @@ int main(int argc, char **argv) {
         printf(":\n");
         printf("  %-20s: ", "Stuck Address");
         fflush(stdout);
-        if (!test_stuck_address(aligned, bufsize / sizeof(ul))) {
+        if (!test_stuck_address(aligned, bufsize / sizeof(ul), light_level)) {
              printf("ok\n");
         } else {
             exit_code |= EXIT_FAIL_ADDRESSLINES;
@@ -386,7 +395,7 @@ int main(int argc, char **argv) {
                 continue;
             }
             printf("  %-20s: ", tests[i].name);
-            if (!tests[i].fp(bufa, bufb, count)) {
+            if (!tests[i].fp(bufa, bufb, count, light_level)) {
                 printf("ok\n");
             } else {
                 exit_code |= EXIT_FAIL_OTHERTEST;

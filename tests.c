@@ -29,6 +29,10 @@ char progress[] = "-\\|/";
 
 /* Function definitions. */
 
+int get_loop_num(int default_loop_num, int light_level) {
+    return (default_loop_num / light_level) + 1;
+}
+
 int compare_regions(ulv *bufa, ulv *bufb, size_t count) {
     int r = 0;
     size_t i;
@@ -56,7 +60,7 @@ int compare_regions(ulv *bufa, ulv *bufb, size_t count) {
     return r;
 }
 
-int test_stuck_address(ulv *bufa, size_t count) {
+int test_stuck_address(ulv *bufa, size_t count, int light_level) {
     ulv *p1 = bufa;
     unsigned int j;
     size_t i;
@@ -64,7 +68,8 @@ int test_stuck_address(ulv *bufa, size_t count) {
 
     printf("           ");
     fflush(stdout);
-    for (j = 0; j < 16; j++) {
+    int loop_num = get_loop_num(16, light_level);
+    for (j = 0; j < loop_num; j++) {
         printf("\b\b\b\b\b\b\b\b\b\b\b");
         p1 = (ulv *) bufa;
         printf("setting %3u", j);
@@ -102,7 +107,7 @@ int test_stuck_address(ulv *bufa, size_t count) {
     return 0;
 }
 
-int test_random_value(ulv *bufa, ulv *bufb, size_t count) {
+int test_random_value(ulv *bufa, ulv *bufb, size_t count, int light_level) {
     ulv *p1 = bufa;
     ulv *p2 = bufb;
     ul j = 0;
@@ -123,7 +128,7 @@ int test_random_value(ulv *bufa, ulv *bufb, size_t count) {
     return compare_regions(bufa, bufb, count);
 }
 
-int test_xor_comparison(ulv *bufa, ulv *bufb, size_t count) {
+int test_xor_comparison(ulv *bufa, ulv *bufb, size_t count, int light_level) {
     ulv *p1 = bufa;
     ulv *p2 = bufb;
     size_t i;
@@ -136,7 +141,7 @@ int test_xor_comparison(ulv *bufa, ulv *bufb, size_t count) {
     return compare_regions(bufa, bufb, count);
 }
 
-int test_sub_comparison(ulv *bufa, ulv *bufb, size_t count) {
+int test_sub_comparison(ulv *bufa, ulv *bufb, size_t count, int light_level) {
     ulv *p1 = bufa;
     ulv *p2 = bufb;
     size_t i;
@@ -149,7 +154,7 @@ int test_sub_comparison(ulv *bufa, ulv *bufb, size_t count) {
     return compare_regions(bufa, bufb, count);
 }
 
-int test_mul_comparison(ulv *bufa, ulv *bufb, size_t count) {
+int test_mul_comparison(ulv *bufa, ulv *bufb, size_t count, int light_level) {
     ulv *p1 = bufa;
     ulv *p2 = bufb;
     size_t i;
@@ -162,7 +167,7 @@ int test_mul_comparison(ulv *bufa, ulv *bufb, size_t count) {
     return compare_regions(bufa, bufb, count);
 }
 
-int test_div_comparison(ulv *bufa, ulv *bufb, size_t count) {
+int test_div_comparison(ulv *bufa, ulv *bufb, size_t count, int light_level) {
     ulv *p1 = bufa;
     ulv *p2 = bufb;
     size_t i;
@@ -178,7 +183,7 @@ int test_div_comparison(ulv *bufa, ulv *bufb, size_t count) {
     return compare_regions(bufa, bufb, count);
 }
 
-int test_or_comparison(ulv *bufa, ulv *bufb, size_t count) {
+int test_or_comparison(ulv *bufa, ulv *bufb, size_t count, int light_level) {
     ulv *p1 = bufa;
     ulv *p2 = bufb;
     size_t i;
@@ -191,7 +196,7 @@ int test_or_comparison(ulv *bufa, ulv *bufb, size_t count) {
     return compare_regions(bufa, bufb, count);
 }
 
-int test_and_comparison(ulv *bufa, ulv *bufb, size_t count) {
+int test_and_comparison(ulv *bufa, ulv *bufb, size_t count, int light_level) {
     ulv *p1 = bufa;
     ulv *p2 = bufb;
     size_t i;
@@ -204,7 +209,7 @@ int test_and_comparison(ulv *bufa, ulv *bufb, size_t count) {
     return compare_regions(bufa, bufb, count);
 }
 
-int test_seqinc_comparison(ulv *bufa, ulv *bufb, size_t count) {
+int test_seqinc_comparison(ulv *bufa, ulv *bufb, size_t count, int light_level) {
     ulv *p1 = bufa;
     ulv *p2 = bufb;
     size_t i;
@@ -216,16 +221,18 @@ int test_seqinc_comparison(ulv *bufa, ulv *bufb, size_t count) {
     return compare_regions(bufa, bufb, count);
 }
 
-int test_solidbits_comparison(ulv *bufa, ulv *bufb, size_t count) {
+int test_solidbits_comparison(ulv *bufa, ulv *bufb, size_t count, int light_level) {
     ulv *p1 = bufa;
     ulv *p2 = bufb;
     unsigned int j;
     ul q;
     size_t i;
 
+
     printf("           ");
     fflush(stdout);
-    for (j = 0; j < 64; j++) {
+    int loop_num = get_loop_num(64, light_level);
+    for (j = 0; j < loop_num; j++) {
         printf("\b\b\b\b\b\b\b\b\b\b\b");
         q = (j % 2) == 0 ? UL_ONEBITS : 0;
         printf("setting %3u", j);
@@ -247,7 +254,7 @@ int test_solidbits_comparison(ulv *bufa, ulv *bufb, size_t count) {
     return 0;
 }
 
-int test_checkerboard_comparison(ulv *bufa, ulv *bufb, size_t count) {
+int test_checkerboard_comparison(ulv *bufa, ulv *bufb, size_t count, int light_level) {
     ulv *p1 = bufa;
     ulv *p2 = bufb;
     unsigned int j;
@@ -256,7 +263,8 @@ int test_checkerboard_comparison(ulv *bufa, ulv *bufb, size_t count) {
 
     printf("           ");
     fflush(stdout);
-    for (j = 0; j < 64; j++) {
+    int loop_num = get_loop_num(64, light_level);
+    for (j = 0; j < loop_num; j++) {
         printf("\b\b\b\b\b\b\b\b\b\b\b");
         q = (j % 2) == 0 ? CHECKERBOARD1 : CHECKERBOARD2;
         printf("setting %3u", j);
@@ -278,7 +286,7 @@ int test_checkerboard_comparison(ulv *bufa, ulv *bufb, size_t count) {
     return 0;
 }
 
-int test_blockseq_comparison(ulv *bufa, ulv *bufb, size_t count) {
+int test_blockseq_comparison(ulv *bufa, ulv *bufb, size_t count, int light_level) {
     ulv *p1 = bufa;
     ulv *p2 = bufb;
     unsigned int j;
@@ -286,7 +294,8 @@ int test_blockseq_comparison(ulv *bufa, ulv *bufb, size_t count) {
 
     printf("           ");
     fflush(stdout);
-    for (j = 0; j < 256; j++) {
+    int loop_num = get_loop_num(256, light_level);
+    for (j = 0; j < loop_num; j++) {
         printf("\b\b\b\b\b\b\b\b\b\b\b");
         p1 = (ulv *) bufa;
         p2 = (ulv *) bufb;
@@ -307,7 +316,7 @@ int test_blockseq_comparison(ulv *bufa, ulv *bufb, size_t count) {
     return 0;
 }
 
-int test_walkbits0_comparison(ulv *bufa, ulv *bufb, size_t count) {
+int test_walkbits0_comparison(ulv *bufa, ulv *bufb, size_t count, int light_level) {
     ulv *p1 = bufa;
     ulv *p2 = bufb;
     unsigned int j;
@@ -315,7 +324,8 @@ int test_walkbits0_comparison(ulv *bufa, ulv *bufb, size_t count) {
 
     printf("           ");
     fflush(stdout);
-    for (j = 0; j < UL_LEN * 2; j++) {
+    int loop_num = get_loop_num(UL_LEN * 2, light_level);
+    for (j = 0; j < loop_num; j++) {
         printf("\b\b\b\b\b\b\b\b\b\b\b");
         p1 = (ulv *) bufa;
         p2 = (ulv *) bufb;
@@ -340,7 +350,7 @@ int test_walkbits0_comparison(ulv *bufa, ulv *bufb, size_t count) {
     return 0;
 }
 
-int test_walkbits1_comparison(ulv *bufa, ulv *bufb, size_t count) {
+int test_walkbits1_comparison(ulv *bufa, ulv *bufb, size_t count, int light_level) {
     ulv *p1 = bufa;
     ulv *p2 = bufb;
     unsigned int j;
@@ -348,7 +358,8 @@ int test_walkbits1_comparison(ulv *bufa, ulv *bufb, size_t count) {
 
     printf("           ");
     fflush(stdout);
-    for (j = 0; j < UL_LEN * 2; j++) {
+    int loop_num = get_loop_num(UL_LEN * 2, light_level);
+    for (j = 0; j < loop_num; j++) {
         printf("\b\b\b\b\b\b\b\b\b\b\b");
         p1 = (ulv *) bufa;
         p2 = (ulv *) bufb;
@@ -373,7 +384,7 @@ int test_walkbits1_comparison(ulv *bufa, ulv *bufb, size_t count) {
     return 0;
 }
 
-int test_bitspread_comparison(ulv *bufa, ulv *bufb, size_t count) {
+int test_bitspread_comparison(ulv *bufa, ulv *bufb, size_t count, int light_level) {
     ulv *p1 = bufa;
     ulv *p2 = bufb;
     unsigned int j;
@@ -381,7 +392,8 @@ int test_bitspread_comparison(ulv *bufa, ulv *bufb, size_t count) {
 
     printf("           ");
     fflush(stdout);
-    for (j = 0; j < UL_LEN * 2; j++) {
+    int loop_num = get_loop_num(UL_LEN * 2, light_level);
+    for (j = 0; j < loop_num; j++) {
         printf("\b\b\b\b\b\b\b\b\b\b\b");
         p1 = (ulv *) bufa;
         p2 = (ulv *) bufb;
@@ -412,7 +424,7 @@ int test_bitspread_comparison(ulv *bufa, ulv *bufb, size_t count) {
     return 0;
 }
 
-int test_bitflip_comparison(ulv *bufa, ulv *bufb, size_t count) {
+int test_bitflip_comparison(ulv *bufa, ulv *bufb, size_t count, int light_level) {
     ulv *p1 = bufa;
     ulv *p2 = bufb;
     unsigned int j, k;
@@ -421,9 +433,11 @@ int test_bitflip_comparison(ulv *bufa, ulv *bufb, size_t count) {
 
     printf("           ");
     fflush(stdout);
-    for (k = 0; k < UL_LEN; k++) {
+    int loop_num_out = get_loop_num(UL_LEN, light_level);
+    for (k = 0; k < loop_num_out; k++) {
         q = ONE << k;
-        for (j = 0; j < 8; j++) {
+        int loop_num_in = get_loop_num(8, light_level);
+        for (j = 0; j < loop_num_in; j++) {
             printf("\b\b\b\b\b\b\b\b\b\b\b");
             q = ~q;
             printf("setting %3u", k * 8 + j);
@@ -447,7 +461,7 @@ int test_bitflip_comparison(ulv *bufa, ulv *bufb, size_t count) {
 }
 
 #ifdef TEST_NARROW_WRITES    
-int test_8bit_wide_random(ulv* bufa, ulv* bufb, size_t count) {
+int test_8bit_wide_random(ulv* bufa, ulv* bufb, size_t count, int light_level) {
     u8v *p1, *t;
     ulv *p2;
     int attempt;
